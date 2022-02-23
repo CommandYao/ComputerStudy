@@ -119,10 +119,10 @@ void InsertDElem()
 }
 void DeleteDElem()
 {
-    // q=p->next
-    // p->next=q->next
-    // q->next->prior=p
-    // free(q);
+     q=p->next
+     p->next=q->next
+     q->next->prior=p
+     free(q);
 }
 
 //静态链表的结构
