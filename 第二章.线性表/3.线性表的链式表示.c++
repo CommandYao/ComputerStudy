@@ -2,6 +2,9 @@
 #include "stdio.h"
 #define MaxSize 12
 typedef int ElemType;
+//
+//!!!!!!!!!!!!
+//链表的下标和数组下标统一了(因为有头结点)即 ai就是链表第i个元素
 
 // 2.单链表节点类型的描述
 typedef struct LNode
@@ -87,11 +90,9 @@ LNode *LocateElem(LinkList L, ElemType e)
 void InsertElem(LinkList &L, int i, ElemType e)
 {
     LNode *p = GetElem(L, i - 1); //查到插入结点的前驱结点
-
     LNode *s; //构造新结点
     s->data = e;
     s->next = p->next;
-
     p->next = s;
 }
 void DeleteElem(LinkList &L, int i)
@@ -110,19 +111,26 @@ typedef struct DNode
 //双链表查找
 
 //双链表的插入操作
-void InsertDElem()
+void InsertDElem(DLinkList &L,DNode &s)
 {
-    // s->next=p->next
-    // s->prior=p
-    // s->next->prior=p
-    // p-next=s
+    int i=5;//假设要在第5个元素后插入
+    DNode* p=L->next;
+    while (i != 0 && p)
+    {
+        p = p->next;
+        i--;
+    }
+    p->next->prior=&s;
+    s.next=p->next;
+    p->next=&s;
+    s.prior=p;
 }
 void DeleteDElem()
 {
-     q=p->next
-     p->next=q->next
-     q->next->prior=p
-     free(q);
+     //q=p->next
+     //p->next=q->next
+     //q->next->prior=p
+     //free(q);
 }
 
 //静态链表的结构
@@ -133,7 +141,7 @@ typedef struct
 } SLinkList[MaxSize];
 //应用题
 
-void Print_L(LinkList L)
+void Print_L(LinkList &L)
 {
     while (L->next != NULL)
     {
