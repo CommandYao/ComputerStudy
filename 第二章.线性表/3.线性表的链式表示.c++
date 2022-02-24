@@ -90,7 +90,7 @@ LNode *LocateElem(LinkList L, ElemType e)
 void InsertElem(LinkList &L, int i, ElemType e)
 {
     LNode *p = GetElem(L, i - 1); //查到插入结点的前驱结点
-    LNode *s; //构造新结点
+    LNode *s;                     //构造新结点
     s->data = e;
     s->next = p->next;
     p->next = s;
@@ -107,32 +107,29 @@ typedef struct DNode
     ElemType data;
     struct DNode *prior, *next;
 } DNode, *DLinkList;
-
 //双链表查找
-
 //双链表的插入操作
-void InsertDElem(DLinkList &L,DNode &s)
+void InsertDElem(DLinkList &L, DNode &s)
 {
-    int i=5;//假设要在第5个元素后插入
-    DNode* p=L->next;
+    int i = 5; //假设要在第5个元素后插入
+    DNode *p = L->next;
     while (i != 0 && p)
     {
         p = p->next;
         i--;
     }
-    p->next->prior=&s;
-    s.next=p->next;
-    p->next=&s;
-    s.prior=p;
+    p->next->prior = &s;
+    s.next = p->next;
+    p->next = &s;
+    s.prior = p;
 }
 void DeleteDElem()
 {
-     //q=p->next
-     //p->next=q->next
-     //q->next->prior=p
-     //free(q);
+    // q=p->next
+    // p->next=q->next
+    // q->next->prior=p
+    // free(q);
 }
-
 //静态链表的结构
 typedef struct
 {
@@ -140,7 +137,6 @@ typedef struct
     int next;
 } SLinkList[MaxSize];
 //应用题
-
 void Print_L(LinkList &L)
 {
     while (L->next != NULL)
@@ -150,7 +146,7 @@ void Print_L(LinkList &L)
     }
 }
 // 1.设计递归算法,删除不带头结点的单链表L中所有值为x的结点
-void Del_X(LinkList &L, ElemType x)
+void Del_X_NoHead(LinkList &L, ElemType x)
 {
     LNode *p;
     if (L == NULL)
@@ -160,16 +156,16 @@ void Del_X(LinkList &L, ElemType x)
         p = L;
         L = L->next;
         free(p);
-        Del_X(L, x);
+        Del_X_NoHead(L, x);
     }
     else
-        Del_X(L->next, x);
+        Del_X_NoHead(L->next, x);
 }
+
 // 2.在带头结点的单链表L中,删除所有值为x的结点
-void Del_X_2(LinkList &L, ElemType x)
+void Del_X_1(LinkList &L, ElemType x)
 {
     LNode *p = L->next, *q, *pre = L;
-
     while (p != NULL)
     {
         if (p->data == x)
@@ -187,22 +183,28 @@ void Del_X_2(LinkList &L, ElemType x)
         }
     }
 }
+void Del_X_2(LinkList &L, ElemType x)
+{
+    LNode *p = L->next, *q = L, *r;
+    while (p != NULL)
+    {
+        if (p->data != x)
+        {
+            q->next = p;
+            q = p;
+            p = p->next;
+        }
+        else
+        {
+            r = p;
+            p = p->next;
+            free(r);
+        }
+        q->next = NULL;
+    }
+}
 // 3.L为带头结点的单链表,反向输出每个结点的值
 //单链表反向输出,可以考虑递归
-
-void Show_reverse_1(LinkList L)
-{
-    // if (L != NULL)
-    // Show_reverse_Part(L->next);
-}
-void Show_reverse_Part(LinkList L)
-{
-
-    if (L->next != NULL)
-        Show_reverse_1(L->next);
-    printf("%d", L->data);
-}
-
 void Show_reverse(LinkList &L)
 {
     LNode *p = L->next, *q, *pre = NULL;
@@ -269,22 +271,22 @@ void Reverse_2(LinkList &L)
 // 6.使元素有序递增
 void SortAscend(LinkList &L)
 {
-    LNode *p = L->next, *pre;
-    LNode *r = p->next;
+    LNode *p = L->next, *pre, *r = p->next; // r是第一个数字
     p->next = NULL;
-    p = r;
-    while (p != NULL)
+    p = r; // p是第一个数字
+    while (p)
     {
-        r = p->next;
         pre = L;
-        while (pre->next != NULL && pre->next->data < p->data)
+        while (pre->next && pre->next->data < p->data)
         {
             pre = pre->next;
         }
-        p->next = pre->next;
-        pre->next = p;
-        p = r;
+        r = p;
+        p = p->next;
+        r->next = pre->next;
+        pre->next = r;
     }
+    int a = 0;
 }
 // 7.删除介于ab之间的值
 void Del_a_b(LinkList &L, int a, int b)
@@ -296,8 +298,8 @@ void Del_a_b(LinkList &L, int a, int b)
         if (p->data > a && p->data < b)
         {
             pre->next = p->next;
-            p = p->next;
             free(p);
+            p = pre->next;
         }
         else
         {
@@ -327,6 +329,7 @@ int main()
 {
     LinkList L = (LinkList)malloc(sizeof(LNode));
     List_HeadInsert(L);
+    // Show_reverse(L);
     SortAscend(L);
     // Show_reverse_1(L);
     // Del_Min(L);
