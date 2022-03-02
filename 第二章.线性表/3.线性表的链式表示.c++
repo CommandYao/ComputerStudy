@@ -12,7 +12,6 @@ typedef struct LNode
     ElemType data;      //数据域
     struct LNode *next; //指针域
 } LNode, *LinkList;
-
 //头插法建立单链表
 LinkList List_HeadInsert(LinkList &L)
 {
@@ -45,6 +44,18 @@ LinkList List_TailInsert(LinkList &L)
         r->next = s;
         r = s;
     }
+    r->next = NULL;
+    return L;
+}
+LinkList List_TailInsert(LinkList &L, int x)
+{
+    LNode *s, *r=L ;
+    while(r->next)
+        r=r->next;
+    s = (LNode *)malloc(sizeof(LNode));
+    s->data = x;
+    r->next = s;
+    r = s;
     r->next = NULL;
     return L;
 }
@@ -161,7 +172,6 @@ void Del_X_NoHead(LinkList &L, ElemType x)
     else
         Del_X_NoHead(L->next, x);
 }
-
 // 2.在带头结点的单链表L中,删除所有值为x的结点
 void Del_X_1(LinkList &L, ElemType x)
 {
@@ -309,12 +319,13 @@ void Del_a_b(LinkList &L, int a, int b)
     }
 }
 // 8.找出两个表的公共结点
-LNode *Find_SameNode(LinkList L1, LinkList L2)
+LNode *Find_SameNode_1(LinkList L1, LinkList L2)
 {
     LNode *p = L1->next;
-    LNode *q = L2->next;
+    LNode *q;
     while (p != NULL)
     {
+        q = L2->next;
         while (q != NULL)
         {
             if (q == p)
@@ -325,22 +336,108 @@ LNode *Find_SameNode(LinkList L1, LinkList L2)
     }
     return NULL;
 }
+int Length(LinkList L)
+{
+    int i = 0;
+    while (L->next)
+    {
+        i++;
+        L = L->next;
+    }
+    return i;
+}
+LNode *Find_SameNode_2(LinkList L1, LinkList L2)
+{
+    int Len1 = Length(L1);
+    int Len2 = Length(L2);
+    LinkList longList;
+    LinkList shortList;
+    int dist = Len1 > Len2 ? Len1 - Len2 : Len2 - Len1;
+    if (Len1 > Len2)
+    {
+        longList = L1;
+        shortList = L2;
+    }
+    else
+    {
+        longList = L2;
+        shortList = L1;
+    }
+    while (dist--)
+    {
+        longList = longList->next;
+    }
+    while (longList != NULL)
+    {
+        if (longList = shortList)
+            return longList;
+        else
+        {
+            longList = longList->next;
+            shortList = shortList->next;
+        }
+    }
+    return NULL;
+}
+// 9.带头结点的链表，按递增顺序输出元素，并释放所在节点(不允许使用数组作为辅助空间)
+void PrintNodeOrder(LinkList L)
+{
+    LNode *pre = L->next, *MinPre = L, *p, *Min;
+    while (L->next)
+    {
+        pre = L->next;
+        p = pre->next;
+        MinPre = L;
+        while (p)
+        {
+            if (MinPre->next->data > p->data)
+                MinPre = pre;
+            pre = p;
+            p = p->next;
+        }
+        printf("%d", MinPre->next->data);
+        Min = MinPre->next;
+        MinPre->next = Min->next;
+        free(Min);
+    }
+}
+// 10.把A B量表拆开,A保留奇数元素,B保留偶数元素
+void Split(LinkList &L)
+{
+    LinkList LA, LB;
+    LA = (LinkList)malloc(sizeof(LNode));
+    LB = (LinkList)malloc(sizeof(LNode));
+    LA->next = NULL;
+    LB->next = NULL;
+    int Len = Length(L);
+    for (int i = 0; i < Len; i++)
+    {
+        if (i % 2 == 0)
+            LA=List_TailInsert(LA, L->next->data);
+        else
+            LB=List_TailInsert(LB, L->next->data);
+        L = L->next;
+    }
+}
+// 11.
 int main()
 {
     LinkList L = (LinkList)malloc(sizeof(LNode));
     List_HeadInsert(L);
-    // Show_reverse(L);
-    SortAscend(L);
-    // Show_reverse_1(L);
-    // Del_Min(L);
-    // Show_reverse(L);
-    return 0;
-    // SeqList L;
-    // 3.C的初始动态分配语句为
-    // L.data = (ElemType *)malloc(sizeof(ElemType) * InitSize);
-    // 4.C++的初始动态分配语句为
-    // L.data = new ElemType[InitSize];
+    //  Show_reverse(L);
+    // SortAscend(L);
+    //  Show_reverse_1(L);
+    //  Del_Min(L);
+    //  Show_reverse(L);
+    // return 0;
+    //  SeqList L;
+    //  3.C的初始动态分配语句为
+    //  L.data = (ElemType *)malloc(sizeof(ElemType) * InitSize);
+    //  4.C++的初始动态分配语句为
+    //  L.data = new ElemType[InitSize];
 
     // SqlList L2 = {{1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 6}, 12};
     // Del_Duplicate(L2);
+    // PrintNodeOrder(L);
+    Split(L);
 }
