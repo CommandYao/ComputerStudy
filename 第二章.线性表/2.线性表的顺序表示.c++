@@ -227,14 +227,14 @@ void Insert_X_youxu(SqlList &L, ElemType x) //普通查找
             {
                 L.data[j] = L.data[j - 1];
             }
-            L.data[i]=x;
+            L.data[i] = x;
             L.length++;
             break;
         }
     }
-    int j=0;
+    int j = 0;
 }
-void Insert_X_youxu_2(SqlList &L, ElemType x){}//折半查找
+void Insert_X_youxu_2(SqlList &L, ElemType x) {} //折半查找
 // 10.
 int main()
 {

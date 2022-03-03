@@ -30,7 +30,7 @@ LinkList List_HeadInsert(LinkList &L)
     }
     return L;
 }
-//尾插法建立链表
+//尾插法建立链表 !!!尾插法建立链表 一定要有一个额外的指针指向表尾元素,不能用L指向表尾元素,会破坏
 LinkList List_TailInsert(LinkList &L)
 {
     int x;
@@ -47,11 +47,24 @@ LinkList List_TailInsert(LinkList &L)
     r->next = NULL;
     return L;
 }
+LinkList List_TailInsert(LinkList &L, int x[], int length)
+{
+    LNode *s, *r = L;
+    for (int i = 0; i < length; i++)
+    {
+        s = (LNode *)malloc(sizeof(LNode));
+        s->data = x[i];
+        r->next = s;
+        r = s;
+    }
+    r->next = NULL;
+    return L;
+}
 LinkList List_TailInsert(LinkList &L, int x)
 {
-    LNode *s, *r=L ;
-    while(r->next)
-        r=r->next;
+    LNode *s, *r = L;
+    while (r->next)
+        r = r->next;
     s = (LNode *)malloc(sizeof(LNode));
     s->data = x;
     r->next = s;
@@ -413,23 +426,81 @@ void Split(LinkList &L)
     for (int i = 0; i < Len; i++)
     {
         if (i % 2 == 0)
-            LA=List_TailInsert(LA, L->next->data);
+            LA = List_TailInsert(LA, L->next->data);
         else
-            LB=List_TailInsert(LB, L->next->data);
+            LB = List_TailInsert(LB, L->next->data);
         L = L->next;
     }
 }
 // 11.
+
+// 12.递增有序线性表,删除重复元素
+void Delete_Order_Duplicate(LinkList &L)
+{
+    LNode *p = L->next, *q, *r;
+    q = p->next;
+    while (q)
+    {
+        if (q->data == p->data)
+        {
+            p->next = q->next;
+            r = q;
+            q = q->next;
+            free(r);
+        }
+        else
+        {
+            p = p->next;
+            q = q->next;
+        }
+    }
+}
+// 13.合并两个有序递增的单链表,并用原来的结点保存
+void Merge_Order_InSame(LinkList &La, LinkList &Lb)
+{
+    LNode *pLa = La->next, *pLb = Lb->next, *p, *q, *r;
+    La->next = NULL;
+    q = La;
+    p = La->next;
+    while (pLa != NULL && pLb != NULL)
+    {
+
+        if (pLa->data < pLb->data)
+        {
+            p = pLa;
+            r = pLa;
+            pLa = pLa->next;
+        }
+        else
+        {
+
+            p = pLb;
+            r = pLb;
+            pLb = pLb->next;
+        }
+        q->next = p;
+        q = q->next;
+    }
+    if (pLa)
+    {
+        q->next = pLa;
+    }
+    else
+    {
+        La->next = pLb;
+    }
+    free(Lb);
+}
 int main()
 {
-    LinkList L = (LinkList)malloc(sizeof(LNode));
-    List_HeadInsert(L);
+    // LinkList L = (LinkList)malloc(sizeof(LNode));
+    //  List_HeadInsert(L);
     //  Show_reverse(L);
-    // SortAscend(L);
+    //  SortAscend(L);
     //  Show_reverse_1(L);
     //  Del_Min(L);
     //  Show_reverse(L);
-    // return 0;
+    //  return 0;
     //  SeqList L;
     //  3.C的初始动态分配语句为
     //  L.data = (ElemType *)malloc(sizeof(ElemType) * InitSize);
@@ -439,5 +510,13 @@ int main()
     // SqlList L2 = {{1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 6}, 12};
     // Del_Duplicate(L2);
     // PrintNodeOrder(L);
-    Split(L);
+    // Split(L);
+    // Delete_Order_Duplicate(L);
+    LinkList La = (LinkList)malloc(sizeof(LNode));
+    LinkList Lb = (LinkList)malloc(sizeof(LNode));
+    int x[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 9};
+    int y[] = {1, 2, 2, 5, 5, 6, 6, 8, 8, 8};
+    List_TailInsert(La, x, 10);
+    List_TailInsert(Lb, y, 10);
+    Merge_Order_InSame(La, Lb);
 }
