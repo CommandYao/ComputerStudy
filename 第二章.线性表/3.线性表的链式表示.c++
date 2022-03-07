@@ -332,23 +332,6 @@ void Del_a_b(LinkList &L, int a, int b)
     }
 }
 // 8.找出两个表的公共结点
-LNode *Find_SameNode_1(LinkList L1, LinkList L2)
-{
-    LNode *p = L1->next;
-    LNode *q;
-    while (p != NULL)
-    {
-        q = L2->next;
-        while (q != NULL)
-        {
-            if (q == p)
-                return q;
-            q = q->next;
-        }
-        p = p->next;
-    }
-    return NULL;
-}
 int Length(LinkList L)
 {
     int i = 0;
@@ -359,7 +342,7 @@ int Length(LinkList L)
     }
     return i;
 }
-LNode *Find_SameNode_2(LinkList L1, LinkList L2)
+LNode *Find_SameNode(LinkList L1, LinkList L2)
 {
     int Len1 = Length(L1);
     int Len2 = Length(L2);
@@ -491,6 +474,81 @@ void Merge_Order_InSame(LinkList &La, LinkList &Lb)
     }
     free(Lb);
 }
+// 14.A B是带头结点的单链表，其中元素有序递增 不破坏AB节点产生公共元素单链表C 即某个元素AB都有 不是公共节点
+void GetSame(LinkList &La, LinkList &Lb)
+{
+    LNode *pLa = La->next, *pLb = Lb->next, *q, *s;
+    LinkList Lc = (LinkList)malloc(sizeof(LNode));
+    q = Lc;
+    while (pLa && pLb)
+    {
+        if (pLa->data > pLb->data)
+        {
+            pLb = pLb->next;
+        }
+        else if (pLa->data < pLb->data)
+        {
+            pLa = pLa->next;
+        }
+        else
+        {
+            s = (LNode *)malloc(sizeof(LNode));
+            s->data = pLa->data;
+            q->next = s;
+            q = s;
+            pLa = pLa->next;
+            pLb = pLb->next;
+        }
+    }
+    q->next = NULL; //设置尾指针为空
+}
+// 15.A B两个递增链表,求交集并存于A链表中
+// 写思路
+void GetSame_15(LinkList &La, LinkList &Lb)
+{
+    LNode *pLa = La->next, *pLb = Lb->next, *rLa = La, *s;
+    while (pLa && pLb)
+    {
+        if (pLa->data < pLb->data)
+        {
+            s = pLa;
+            pLa = pLa->next;
+            free(s);
+        }
+        else if (pLa->data > pLb->data)
+        {
+            s = pLb;
+            pLb = pLb->next;
+            free(s);
+        }
+        else
+        {
+            rLa->next = pLa;
+            rLa = pLa;
+            pLa = pLa->next;
+            s = pLb;
+            pLb = pLb->next;
+            free(s);
+        }
+        while (pLa)
+        {
+            s = pLa;
+            pLa = pLa->next;
+            free(s);
+        }
+        while (pLb)
+        {
+            s = pLb;
+            pLb = pLb->next;
+            free(s);
+        }
+        rLa->next=NULL;
+        free(Lb);
+    }
+}
+// 16.
+
+
 int main()
 {
     // LinkList L = (LinkList)malloc(sizeof(LNode));
