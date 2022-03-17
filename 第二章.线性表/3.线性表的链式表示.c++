@@ -542,13 +542,66 @@ void GetSame_15(LinkList &La, LinkList &Lb)
             pLb = pLb->next;
             free(s);
         }
-        rLa->next=NULL;
+        rLa->next = NULL;
         free(Lb);
     }
 }
-// 16.
-
-
+// 16.两个整数序列，判断B是否是A的连续子序列
+bool IsBBelongToA(LinkList &La, LinkList &Lb)
+{
+    LNode *pLa = La->next, *qLa = La->next, *pLb = Lb->next;
+    while (pLa && pLb)
+    {
+        if (pLa->data = pLb->data)
+        {
+            pLa = pLa->next;
+            pLb = pLb->next;
+        }
+        else
+        {
+            pLb = Lb->next;
+            qLa = qLa->next; //从A表中的下一个元素开始比较
+            pLa = qLa;
+        }
+    }
+    if (pLb == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+// 17.设计一个算法用于判断带头结点的循环双链表是否对称
+bool IsSymmetry(DLinkList &L)
+{
+    DNode *p = L->prior, *q = L->next;
+    while (p != q)
+    {
+        if (p->data == q->data)
+        {
+            p = p->next;
+            q = q->prior;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return true;
+}
+// 18.两个循环单链表,头指针分别是h1和h2,把两个链表合并仍保持循环链表
+void MergeDLink(DLinkList &La, DLinkList &Lb)
+{
+    DNode *h1 = La, *h2 = Lb;
+    DNode *Preh1 = La->prior;
+    DNode *Preh2 = Lb->prior;
+    Preh1->next = Lb;
+    Lb->prior = Preh1;
+    Preh2->next = La;
+    La->prior = Preh2;
+}
 int main()
 {
     // LinkList L = (LinkList)malloc(sizeof(LNode));
