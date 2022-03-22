@@ -591,16 +591,84 @@ bool IsSymmetry(DLinkList &L)
     }
     return true;
 }
-// 18.两个循环单链表,头指针分别是h1和h2,把两个链表合并仍保持循环链表
+// 18.两个循环单链表,头指针分别是h1和h2,把两个链表合并仍保持循环单链表
 void MergeDLink(DLinkList &La, DLinkList &Lb)
 {
-    DNode *h1 = La, *h2 = Lb;
-    DNode *Preh1 = La->prior;
-    DNode *Preh2 = Lb->prior;
-    Preh1->next = Lb;
-    Lb->prior = Preh1;
-    Preh2->next = La;
-    La->prior = Preh2;
+    DNode *h1 = La, *h2 = Lb, *LastLa = h1, *LastLb = h2;
+
+    while (LastLa->next != h1)
+    {
+        LastLa = LastLa->next;
+    }
+    while (LastLb->next != h1)
+    {
+        LastLb = LastLb->next;
+    }
+    LastLa->next = h2;
+    LastLb->next = h1;
+}
+// 19. 找出循环单链表中的最小值，逐一删除直至链表为空，然后删除头节点
+void FindMinDel(DLinkList &L)
+{
+    DNode *p, *pre, *Minp, *Minpre;
+    while (L->next != L)
+    {
+        p = L->next;
+        pre = L;
+        while (p != L)
+        {
+            if (p->data < Minp->data)
+            {
+                Minpre = pre;
+                Minp = p;
+            }
+            pre = p;
+            p = p->next;
+        }
+        printf("%d", Minp->data);
+        Minpre->next = Minp->next;
+        free(Minp);
+    }
+    free(L);
+}
+// 20.寻找元素，并把链表按访问频度排序
+typedef struct D2Node
+{
+    ElemType data;
+    D2Node *next;
+    D2Node *prior;
+    int freq = 0;
+} D2Node, *D2LinkList;
+
+D2Node *Locate(D2LinkList &L, ElemType x)
+{
+    D2Node *p = L->next, *q;
+    while (p)
+    {
+        if (p->data == x)
+        {
+            p->freq ++;
+            q = p->prior;
+            while (q != L)
+            {
+                if (q->freq <= p->freq)
+                {
+                    q = q->prior;
+                }
+            }
+           
+            p->prior->next = p->next;
+            p->next->prior = p->prior;
+            
+            q->next->prior = p;
+            p->next = q->next;
+            p->prior = q;
+            q->next = p;
+            return p;
+        }
+        p=p->next;
+    }
+    return NULL;
 }
 int main()
 {

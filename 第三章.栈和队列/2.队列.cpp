@@ -1,5 +1,6 @@
 #define MaxSize 50
 #include <malloc.h>
+#include "stdio.h"
 typedef int ElemType;
 typedef struct
 {
@@ -44,12 +45,12 @@ bool DeQueue(SqQueue &Q, ElemType &x)
     return true;
 }
 //队列的链式存储
-typedef struct LinkNode //这里必须先写LinkNode 否则编译报错
+typedef struct LinkNode //队列的结点
 {
     ElemType data;
     struct LinkNode *next;
 } LinkNode;
-typedef struct
+typedef struct //队列 就是在结点上多了头尾指针 结点是自己链在一起的
 {
     LinkNode *front, *rear;
 } LinkQueue;
@@ -79,7 +80,7 @@ bool DeQueue(LinkQueue &Q, ElemType &x)
         return false;
     LinkNode *p = Q.front->next;
     x = p->data;
-    Q.front->next = p->next;
+    Q.front->next = p->next; // Q.front指向头结点
     if (Q.rear == p)
         Q.rear = Q.front; //若队列中只有一个结点,删除后变空
     free(p);
@@ -88,4 +89,45 @@ bool DeQueue(LinkQueue &Q, ElemType &x)
 int main()
 {
     return 0;
+}
+// 1.编写一个结构,tag=0或1来表示队空和队满
+typedef struct
+{
+    ElemType data;
+    LinkNode1 *next;
+} LinkNode1;
+typedef struct
+{
+
+    LinkNode1 *front;
+    LinkNode1 *rear;
+    int tag = 0;
+} LinkQueue1;
+void EnTagQueue(LinkQueue1 &Q, ElemType x)
+{
+    if (Q.rear == Q.front && Q.tag == 1)
+    {
+        printf("队满");
+    }
+    else
+    {
+        Q.rear->data = x;
+        Q.rear = Q.rear->next;
+        if (Q.rear == Q.front)
+            Q.tag = 1;
+    }
+}
+void DeTagQueue(LinkQueue1 &Q)
+{
+    if (Q.rear == Q.front && Q.tag == 0)
+    {
+        printf("队空");
+    }
+    else
+    {
+        LinkNode1 *s = Q.front->next;
+        printf("%d", s->data);
+        Q.front = s;
+        free(s);
+    }
 }
