@@ -8,9 +8,9 @@ typedef struct
     int front, rear;
 } SqQueue;
 
-bool EmptyQueue(SqQueue &Q)
+bool EmptyQueue(SqQueue &Q)//非循环队列判断空
 {
-    if (Q.front == Q.rear == 0) //判断顺序队列是否为空,必须有==0,否则进队出队头尾指针会在尾指针出相等
+    if (Q.front == Q.rear == 0) //判断顺序队列是否为空,必须有==0,否则进队出队头尾指针会在尾指针处相等
         return true;
     else
         return false;
@@ -56,7 +56,7 @@ typedef struct //队列 就是在结点上多了头尾指针 结点是自己链�
 } LinkQueue;
 void InitQueue(LinkQueue &Q)
 {
-    Q.front = Q.rear = (LinkNode *)malloc(sizeof(LinkNode));
+    Q.front = Q.rear = (LinkNode *)malloc(sizeof(LinkNode));//为什么写右边,因为建立头结点
     Q.front->next = NULL;
 }
 bool IsEmpty(LinkQueue Q)
@@ -98,36 +98,7 @@ typedef struct
 } LinkNode1;
 typedef struct
 {
-
-    LinkNode1 *front;
-    LinkNode1 *rear;
+    ElemType data[MaxSize];
+    int top = -1;
     int tag = 0;
-} LinkQueue1;
-void EnTagQueue(LinkQueue1 &Q, ElemType x)
-{
-    if (Q.rear == Q.front && Q.tag == 1)
-    {
-        printf("队满");
-    }
-    else
-    {
-        Q.rear->data = x;
-        Q.rear = Q.rear->next;
-        if (Q.rear == Q.front)
-            Q.tag = 1;
-    }
-}
-void DeTagQueue(LinkQueue1 &Q)
-{
-    if (Q.rear == Q.front && Q.tag == 0)
-    {
-        printf("队空");
-    }
-    else
-    {
-        LinkNode1 *s = Q.front->next;
-        printf("%d", s->data);
-        Q.front = s;
-        free(s);
-    }
-}
+} Queue1;
