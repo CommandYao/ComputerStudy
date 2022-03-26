@@ -95,6 +95,7 @@ bool BracektCheck(char *str)
         return true;
     }
 }
+// 2.
 void SetSeats(char *Seats, int n)
 {
     SqStack S;
@@ -111,11 +112,16 @@ void SetSeats(char *Seats, int n)
         }
         while (!StackEmpty(S))
         {
-           ElemType Result;
+            ElemType Result;
             Pop(S, Result);
             ResultSeats += Result;
         }
     }
+}
+// 3.设计递归函数的非递归形式
+int Digui(int n,int x)
+{
+    
 }
 int main()
 {

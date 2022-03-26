@@ -8,7 +8,7 @@ typedef struct
     int front, rear;
 } SqQueue;
 
-bool EmptyQueue(SqQueue &Q)//非循环队列判断空
+bool EmptyQueue(SqQueue &Q) //非循环队列判断空
 {
     if (Q.front == Q.rear == 0) //判断顺序队列是否为空,必须有==0,否则进队出队头尾指针会在尾指针处相等
         return true;
@@ -56,7 +56,7 @@ typedef struct //队列 就是在结点上多了头尾指针 结点是自己链�
 } LinkQueue;
 void InitQueue(LinkQueue &Q)
 {
-    Q.front = Q.rear = (LinkNode *)malloc(sizeof(LinkNode));//为什么写右边,因为建立头结点
+    Q.front = Q.rear = (LinkNode *)malloc(sizeof(LinkNode)); //为什么写右边,因为建立头结点
     Q.front->next = NULL;
 }
 bool IsEmpty(LinkQueue Q)
@@ -91,14 +91,136 @@ int main()
     return 0;
 }
 // 1.编写一个结构,tag=0或1来表示队空和队满
-typedef struct
-{
-    ElemType data;
-    LinkNode1 *next;
-} LinkNode1;
+
 typedef struct
 {
     ElemType data[MaxSize];
-    int top = -1;
+    int front = 0;
+    int rear = 0;
     int tag = 0;
 } Queue1;
+bool EnQueue1(Queue1 &Q, ElemType x)
+{
+    if (Q.front == Q.rear && Q.tag == 1)
+        return false;
+    Q.data[Q.rear] = x;
+    Q.rear = (Q.rear + 1) % MaxSize;
+    Q.tag = 1; //进队就让Q.tag=1 因为可能会队满 但是判断条件还有Q.front==Q.rear 所以tag=1没问题
+}
+bool DeQueue1(Queue1 &Q, ElemType &x)
+{
+    if (Q.front == Q.rear && Q.tag == 0)
+        return false;
+    x = Q.data[Q.front];
+    Q.front = (Q.front + 1) % MaxSize;
+    Q.tag = 0; //出队就让Q.tag=0 因为可能会队空 但是判断条件还有Q.front==Q.rear 所以tag=1没问题
+}
+
+// 2.利用队列Q和栈S实现元素逆置
+typedef struct
+{
+    ElemType data[MaxSize];
+    int top;
+} SqStack;
+bool StackEmpty(SqStack &S)
+{
+    if (S.top == -1)
+        return true;
+    else
+        return false;
+}
+bool Push(SqStack &S, ElemType x)
+{
+    if (S.top == MaxSize - 1)
+        return false;
+    S.data[++S.top] = x;
+    return true;
+}
+bool Pop(SqStack &S, ElemType &x)
+{
+    if (StackEmpty(S))
+        return false;
+    x = S.data[S.top--];
+    return true;
+}
+void InitStack(SqStack &S)
+{
+    S.top = -1;
+}
+void ReverseUseQandS(SqQueue &Q)
+{
+    SqStack S;
+    InitStack(S);
+    ElemType x;
+    while (Q.rear == Q.front)
+    {
+        DeQueue(Q, x);
+        Push(S, x);
+    }
+    while (!StackEmpty(S))
+    {
+        Pop(S, x);
+        EnQueue(Q, x);
+    }
+}
+// 3.用两个栈来模拟一个队
+bool StackOverflow(SqStack S)
+{
+    if (S.top == MaxSize - 1)
+    {
+        return true;
+    }
+    return false;
+}
+bool EnQueueUseS(SqStack &S1, SqStack S2, ElemType x)
+{
+    if (!StackOverflow(S1))
+    {
+        Push(S1, x);
+        return true;
+    }
+    else if (StackOverflow(S1) && StackEmpty(S2)) // S1满S2空,先把S1装进S2里
+    {
+        while (S1.top < MaxSize - 1)
+        {
+            ElemType s;
+            Pop(S1, s);
+            Push(S2, s);
+        }
+        Push(S1, x);
+        return true;
+    }
+    else if (StackOverflow(S1) && !StackEmpty(S2)) // S1满S2不空,则队满
+    {
+        return false;
+    }
+}
+bool DeQueueUseS(SqStack &S1, SqStack S2, ElemType &x)
+{
+    if (!StackEmpty(S2))
+    {
+        Pop(S2, x);
+    }
+    else if (StackEmpty(S1))
+    {
+        return false;
+    }
+    else
+    {
+        ElemType s;
+        while (!StackEmpty(S1))
+        {
+            Pop(S1, s);
+            Push(S2, s);
+        }
+        Pop(S2, x);
+    }
+}
+bool QueueEmptyUseS(SqStack &S1, SqStack S2)
+{
+    if (StackEmpty(S1) && StackEmpty(S2))
+    {
+        return true;
+    }
+    return false;
+}
