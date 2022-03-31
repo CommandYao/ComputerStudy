@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #define MAXLEN 255 //定长顺序存储
 typedef struct
 {
@@ -10,9 +11,7 @@ typedef struct //堆分配存储
     char *ch; //按串长度分配存储区,ch指向串的基地址
     int length;
 } HString;
-void SubString(SString &sub, SString S, int pos, int len)
-{
-}
+void SubString(SString &sub, SString S, int pos, int len) {}
 int StrLength(SString S) {}
 int StrCompare(SString S, SString T) {}
 int Index(SString S, SString T)
@@ -30,7 +29,7 @@ int Index(SString S, SString T)
     return 0;
 }
 //简单的模式匹配
-int Index(SString S, SString T)
+int Index1(SString S, SString T)
 {
     int i = 1, j = 1;
     while (i < S.length && j < T.length)
@@ -42,7 +41,7 @@ int Index(SString S, SString T)
         }
         else
         {
-            i = i - j + 2;//i-j+1回到开始比较的字符再+1到下一个字符
+            i = i - j + 2; // i-j+1回到开始比较的字符再+1到下一个字符
             j = 1;
         }
     }
@@ -51,7 +50,30 @@ int Index(SString S, SString T)
     else
         return 0;
 }
+
+// kmp
+
+void getNext(int *next)
+{
+    char p[] = "abbba";
+    next[0] = -1;
+    int i = 0, j = -1;
+
+    while (i < (int)strlen(p))
+    {
+        if (j == -1 || p[i] == p[j])
+        {
+            ++i;
+            ++j;
+            next[i] = j;
+        }
+        else
+            j = next[j];
+    }
+}
 int main()
 {
+    int next[5];
+    getNext(next);
     return 0;
 }
