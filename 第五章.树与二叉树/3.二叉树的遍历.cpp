@@ -190,6 +190,34 @@ void InThread(ThreadTree &p, ThreadTree &pre)
         InThread(p->rchild, pre);
     }
 }
+void CreateInThread(ThreadTree T)
+{
+    ThreadTree pre = NULL;
+    if (T != NULL)
+    {
+        InThread(T, pre);
+        pre->rchild = NULL;
+        pre->rtag = 1;
+    }
+}
+ThreadNode *FirstNode(ThreadNode *p)
+{
+    while (p->ltag == 0) //中序遍历 左根右 如果有左孩子就继续找左孩子,如果没有,那下一个访问的就是他
+    {
+        p = p->lchild;
+    }
+    return p;
+}
+//求中序线索二叉树中结点p在中序序列下的后继
+ThreadNode *NextNode(ThreadNode *p)
+{
+    if (p->rtag == 1)
+        return p->rchild; //如果rtag是1则lchild指向后继
+    else
+    {
+        return FirstNode(p);
+    }
+}
 int main()
 {
 
@@ -226,3 +254,4 @@ int main()
     // ThreadTree *pre->next = A
     return 0;
 }
+
